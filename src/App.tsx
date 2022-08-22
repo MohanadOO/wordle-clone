@@ -1,4 +1,4 @@
-import toast, { Toaster } from 'react-hot-toast'
+import { Toaster } from 'react-hot-toast'
 import GameGrid from './components/GameGrid'
 import KeyboardKeys from './components/KeyboardKeys'
 import Nav from './components/Nav'

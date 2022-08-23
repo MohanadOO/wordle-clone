@@ -8,7 +8,7 @@ export default function GameGrid() {
   const { stopGame } = useGame()
 
   return (
-    <section id='game-grid' className='flex flex-col gap-1 mt-24 sm:mt-48'>
+    <section id='game-grid' className='flex flex-col gap-1 mt-24'>
       {stopGame && <Confetti width={width} height={height} />}
 
       <Row rowID={0} />

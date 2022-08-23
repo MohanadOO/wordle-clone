@@ -3,7 +3,8 @@ import toast from 'react-hot-toast'
 import { useGame } from '../context/GameContext'
 
 export default function Row({ rowID }: { rowID: number }) {
-  const { currentRow, answer, checkGameState } = useGame()
+  const { wordList, currentRow, answer, checkGameState, letter, updateLetter } =
+    useGame()
   const [currentCell, setCurrentCell] = useState(0)
 
   const [word, setWord] = useState(Array(5).fill(''))
@@ -19,20 +20,44 @@ export default function Row({ rowID }: { rowID: number }) {
     }
   })
 
-  function handleKeyPress(e: KeyboardEvent) {
+  useEffect(() => {
+    if (currentRow === rowID) {
+      handleKeyPress(letter)
+    }
+  }, [updateLetter])
+
+  function handleKeyPress(e: KeyboardEvent | string) {
+    let letter: undefined | string
+    if (typeof e === 'string') {
+      letter = e
+    } else {
+      letter = e.key
+    }
+
     if (!rowAnswer) {
-      if (e.key === 'Backspace' && currentCell > 0) {
+      if (letter === 'Backspace' && currentCell > 0) {
         setWord((prevValue) => {
-          return prevValue.map((letter, index) => {
-            return index === currentCell - 1 ? '' : letter
+          return prevValue.map((prevLetter, index) => {
+            return index === currentCell - 1 ? '' : prevLetter
           })
         })
         return setCurrentCell((prevValue) => prevValue - 1)
       }
-      if (e.key === 'Enter') {
-        if (currentCell === 5) {
+      if (letter === 'Enter') {
+        if (
+          currentCell === 5 &&
+          wordList.includes(word.join('').toLowerCase())
+        ) {
           setRowAnswer(true)
           return checkGameState(word)
+        } else if (currentCell === 5) {
+          toast.error(<b>This is not a Word</b>, {
+            style: {
+              borderRadius: '20px',
+              backgroundColor: '#333',
+              color: 'white',
+            },
+          })
         } else {
           toast.error(<b>No Enough Words</b>, {
             style: {
@@ -43,10 +68,10 @@ export default function Row({ rowID }: { rowID: number }) {
           })
         }
       }
-      if (currentCell < 5 && /^[a-zA-Z]$/.test(e.key)) {
+      if (currentCell < 5 && /^[a-zA-Z]$/.test(letter)) {
         setWord((prevValue) => {
-          return prevValue.map((letter, index) => {
-            return index === currentCell ? e.key : letter
+          return prevValue.map((prevLetter, index) => {
+            return index === currentCell ? letter : prevLetter
           })
         })
         return setCurrentCell((prevValue) => prevValue + 1)
@@ -60,7 +85,7 @@ export default function Row({ rowID }: { rowID: number }) {
         return (
           <div
             key={letter + index}
-            className={`w-[60px] h-[60px] border-2 border-white/20 uppercase flex items-center justify-center text-3xl font-bold ${
+            className={`w-[45px] h-[45px] sm:w-[55px] sm:h-[55px] md:w-[60px] md:h-[60px] border-2 border-white/20 uppercase flex items-center justify-center text-xl sm:text-2xl md:text-3xl font-bold ${
               rowAnswer
                 ? letter.toUpperCase() === answer[index].toUpperCase()
                   ? 'bg-green-500'

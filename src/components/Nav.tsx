@@ -10,7 +10,9 @@ export default function Nav() {
             <HiMenu className='w-6 h-6 md:w-7 md:h-7' />
           </li>
           <li className='ml-5 mr-auto md:absolute md:left-[50%] md:translate-x-[-70%]'>
-            <span className='text-2xl md:text-3xl font-bold'>Wordle</span>
+            <span className='text-3xl md:text-4xl font-bold font-saira'>
+              Wordle
+            </span>
           </li>
           <ul className='flex gap-3 items-center'>
             <li className='cursor-pointer'>
